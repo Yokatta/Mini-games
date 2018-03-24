@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript">
+
+		//
+		//for fun
+// x y velocity
+		var x_movement = 0;
+		var y_movement = 0;
+
+		//start middle
+		var postion_x = 10;
+		var postion_y = 10;
+		//number of grid for the whole game bored;
+		var tile_size = 20;
+		var tile_count = 40;
+		// furit for the snake.
+		food_x = 15;
+		food_y = 15;
+		var trail = [];
+		var tail = 1;
+		var canvas = Object;
+		var ctx = Object;
+		var level = 5;
+
+		// one second dividied by the level you are on.
+		//var level = 5;
+
+		//actual function of the game.
+		window.onload = function(){
+			console.log('play this garbage game');
+			var previous = Date.now();
+			canvas = document.getElementById("canvas");
+			ctx = canvas.getContext('2d');
+			document.addEventListener('keyup', function(event){
+				//responding event to user pressing arrow key;
+				switch(event.keyCode) {
+					case 37 :
+		        	//left
+			        	if (x_movement != 1){
+				            x_movement = -1;
+				            y_movement = 0;
+			        	}
+		        	break;
+			        case 38 :
+			        //up
+			        	if (y_movement != 1){
+				            x_movement = 0;
+				            y_movement = -1;	        	
+			       	 	}
+			        break;
+			        case 39 :
+			        //right
+			        	if (x_movement != -1){
+				            x_movement = 1;
+			            	y_movement = 0;
+			       	 	}
+			        break;
+			        case 40 :
+			        //down
+			        	if (y_movement != -1){
+				            x_movement = 0;
+			            	y_movement = 1;
+			       	 	}
+			        break;
+				}
+				//snake();
+			});
+			// console.log('1');
+			snake();
+		}
+
+		function snake(running) {
+			if (running == undefined || running == 'undefined'){
+				running = true;
+			}
+
+			postion_x+=x_movement;
+			postion_y+=y_movement;
+
+			// implemented wrapping as snake goes pass the walls.
+			if(postion_x < 0) {
+				postion_x = tile_count-1;
+			}
+			if(postion_x > tile_count-1) {
+				postion_x = 0;
+			}
+			if(postion_y < 0) {
+				postion_y = tile_count-1;
+			}
+			if(postion_y > tile_count-1) {
+				postion_y = 0;
+			}
+
+			ctx.fillStyle = "#ffffff";
+			ctx.fillRect(0,0,canvas.width,canvas.height);
+
+			    //snake 
+		    ctx.fillStyle = "#000000";
+		    for (i=0;i<trail.length;i++) {
+		        ctx.fillRect(trail[i].x*tile_size,trail[i].y*tile_size,tile_size,tile_size);
+		        if (trail[i].x == postion_x && trail[i].y == postion_y) {
+		        	console.log(tail);
+		            tail = 1;
+		        }
+		    }
+		    
+		    trail.push({x:postion_x,y:postion_y});
+		    
+		    while (trail.length > tail){
+		    	//console.log('true');
+		        trail.shift();
+		    }
+
+		    //food, red rect index as apple.
+		    ctx.fillStyle = "#F00";
+		    ctx.fillRect(food_x*tile_size,food_y*tile_size,tile_size,tile_size);
+
+		    if(postion_x == food_x && postion_y == food_y) {
+		        tail++;
+		        //reandom reset the position of the fruit;
+		        food_x = Math.floor(Math.random()*tile_count);
+		        food_y = Math.floor(Math.random()*tile_count);
+		    }
+
+		    // for every 5th food you level up
+		    // if (tail%5 == 0){
+		    // 	level++;
+		    // }
+		    //console.log(tail%5);
+		//game interval timer.
+			if (running){
+				// console.log(running);
+				setTimeout(snake,1000/level);
+			}
+		}
+
+	</script>
+	<style type="text/CSS">
+		#canvas {
+			background-color:black;
+			border: 1px solid; 
+		}
+	</style>
+</head>
+<body>
+<canvas id="canvas" width="800" height="800">
+
+</canvas>
+</body>
+</html>
